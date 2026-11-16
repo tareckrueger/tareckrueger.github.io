@@ -36,9 +36,9 @@ window.PROJECTS = [
     name: "Volos Agency",
     kind: "Website for a creator and influencer marketing agency",
     // One line: what the client got.
-    result: "A full agency website, designed and built by me, live and taking enquiries from creators and brands.",
+    result: "I designed and built the website for Volos Agency, a creator management agency in gaming.",
     summary:
-      "Volos manages gaming creators and runs brand campaigns with them. The site has to work for two different visitors, so creators and brands each get their own clear path to get in touch.",
+      "It shows the agency's creators and partners, and gives creators and brands each their own way to get in touch.",
     did: ["Design", "Development", "Launch"],
     url: "https://www.volos-agency.com/",
     urlLabel: "volos-agency.com",

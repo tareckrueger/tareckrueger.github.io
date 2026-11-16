@@ -31,6 +31,8 @@
   --shadow:0 1px 2px rgb(19 40 28 / .06), 0 18px 40px -18px rgb(19 40 28 / .22);
   --field-line:#7C867E;
   --error:#B3261E;
+  /* light mode: headings slightly wider */
+  --head-weight:700;--head-track:-.018em;
   --li:#0A66C2;
   --ease-out:cubic-bezier(.23,1,.32,1);
   --max:1240px;
@@ -50,6 +52,8 @@
     --shadow:0 1px 2px rgb(0 0 0 / .4), 0 18px 40px -18px rgb(0 0 0 / .7);
     --field-line:#6C776E;
     --error:#FF9C94;
+    /* light text on dark reads heavier, so headings go a touch lighter */
+    --head-weight:620;--head-track:-.03em;
     --li:#71B7FB;
   }
 }
@@ -66,7 +70,7 @@ body{
 img,video{display:block;max-width:100%;height:auto}
 a{color:inherit}
 .wrap{max-width:var(--max);margin-inline:auto;padding-inline:var(--gutter)}
-h1,h2,h3{font-weight:700;letter-spacing:-.03em;line-height:1.04;text-wrap:balance}
+h1,h2,h3{font-weight:var(--head-weight);letter-spacing:var(--head-track);line-height:1.04;text-wrap:balance}
 p{text-wrap:pretty}
 
 /* the one button */
@@ -96,10 +100,10 @@ p{text-wrap:pretty}
 
 /* hero */
 .hero{padding-block:clamp(40px,7vw,88px) clamp(36px,5vw,64px)}
-.hero h1{font-size:clamp(2.5rem,6.4vw,5rem);max-width:15ch}
+.hero h1{font-size:clamp(2.5rem,6.4vw,5rem);max-width:16ch}
 .hero-copy p{margin-top:1.25rem;max-width:46ch;font-size:clamp(1.0625rem,1.5vw,1.25rem);color:var(--ink-soft)}
 .hero{display:grid;gap:clamp(36px,5vw,48px);align-items:center}
-@media (min-width:1000px){.hero{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:64px}}
+@media (min-width:1000px){.hero{grid-template-columns:minmax(0,1.85fr) minmax(0,1fr);gap:56px}}
 .hero-copy{min-width:0}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:2rem}
 
@@ -128,7 +132,7 @@ p{text-wrap:pretty}
   font-weight:800;font-size:1.375rem;letter-spacing:-.02em;
 }
 .avatar img{width:100%;height:100%;object-fit:cover}
-.hc-name{font-weight:700;font-size:1.375rem;letter-spacing:-.02em;line-height:1.2}
+.hc-name{font-weight:var(--head-weight);font-size:1.375rem;letter-spacing:-.02em;line-height:1.2}
 .hc-role{color:var(--ink-soft);font-size:.9375rem}
 .hc-mail{justify-self:start;padding-top:20px;width:100%;border-top:1px solid var(--line);color:var(--ink);font-weight:500;text-decoration:none;overflow-wrap:anywhere;transition:color 160ms ease}
 .hc-mail:empty{display:none}
@@ -211,7 +215,7 @@ p{text-wrap:pretty}
 @media (min-width:760px){
   .steps div{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:40px;align-items:baseline}
 }
-.steps dt{font-size:clamp(1.25rem,2vw,1.625rem);font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.steps dt{font-size:clamp(1.25rem,2vw,1.625rem);font-weight:var(--head-weight);letter-spacing:-.02em;line-height:1.2}
 .steps dd{color:var(--ink-soft);max-width:56ch}
 
 /* closing */
@@ -327,7 +331,7 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
   <section class="hero wrap">
     <div class="hero-copy">
       <h1>I design and build websites for small businesses.</h1>
-      <p>Clear pages that load fast on a phone and tell visitors what to do next. My work is right below.</p>
+      <p>A good website makes your business look professional and helps customers find and contact you.</p>
       <div class="hero-actions">
         <a class="btn btn--lg btn--swap" data-book href="#"><span class="swap"><span>Book a free 15 min call</span><span aria-hidden="true">Excited to work with you</span></span></a>
         <a class="btn btn--lg btn--ghost" href="#contact">Contact</a>
@@ -352,19 +356,19 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
   </section>
 
   <section class="how wrap">
-    <h2>How a project with me runs</h2>
+    <h2>How it works</h2>
     <dl class="steps">
       <div>
         <dt>We talk for 15 minutes</dt>
-        <dd>You tell me about your business and what the website should do for it. I tell you honestly if I am the right person for it.</dd>
+        <dd>You tell me about your business and your idea, and we discuss how to bring it to life.</dd>
       </div>
       <div>
         <dt>I design and build it</dt>
-        <dd>You see the real site early, not a slideshow. You give feedback, I change it, until it fits.</dd>
+        <dd>You see real progress early on, not just mockups. You give feedback and I refine the site until it's exactly right.</dd>
       </div>
       <div>
         <dt>Your site goes live</dt>
-        <dd>I put it online on your domain and check it on phones, tablets and laptops before we call it done.</dd>
+        <dd>I put it online on your own domain. Afterwards I can look after the site and help with updates whenever you need.</dd>
       </div>
     </dl>
   </section>
@@ -373,7 +377,7 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
     <div class="close-grid">
       <div class="close-copy">
         <h2>Need a website for your business?</h2>
-        <p>Pick a time that suits you. It is free, it takes 15 minutes, and you will know more after it than before.</p>
+        <p>Pick a time that suits you. The call is free.</p>
         <a class="btn btn--lg" data-book href="#">Book a free 15 min call</a>
       </div>
       <form class="form" id="contact-form" novalidate>
