@@ -443,15 +443,23 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
     sendBtn.disabled = true; sendBtn.textContent = 'Sending...';
     fetch('https://formsubmit.co/ajax/' + encodeURIComponent(site.contactEmail), {
       method: 'POST', headers: {'Accept': 'application/json'}, body: data
-    }).then(function(r){ return r.json().then(function(j){ if (!r.ok || j.success === 'false') throw new Error(); }); })
+    }).then(function(r){ return r.json().then(function(j){
+        if (!r.ok || String(j.success) === 'false') { var err = new Error(j.message || ''); err.service = true; throw err; }
+      }); })
       .then(function(){
         form.reset();
         statusEl.className = 'status ok';
         statusEl.textContent = 'Thanks, your message is sent. I will reply soon.';
       })
-      .catch(function(){
+      .catch(function(err){
         statusEl.className = 'status bad';
-        statusEl.textContent = 'Something went wrong and your message was not sent. Please try again in a moment.';
+        if (err && err.service && /activation/i.test(err.message)) {
+          statusEl.textContent = 'This form is not switched on yet, so your message was not sent. Please book a call instead.';
+        } else if (err && err.service && err.message) {
+          statusEl.textContent = 'Your message was not sent: ' + err.message;
+        } else {
+          statusEl.textContent = 'Your message was not sent because the connection failed. Check your internet and try again.';
+        }
       })
       .then(function(){ sendBtn.disabled = false; sendBtn.textContent = 'Send message'; });
   });
