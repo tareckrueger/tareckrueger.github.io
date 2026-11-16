@@ -18,12 +18,15 @@ window.SITE = {
   // Contact form endpoint from Formspree (formspree.io > your form > Integration).
   // Messages go to the email address set in your Formspree account.
   formEndpoint: "https://formspree.io/f/mvkakdbp",
+  // Shown on the profile card and as the email icon.
+  email: "tareckrueger@gmail.com",
   // Paste your profile links. Entries with an empty url are hidden.
   socials: [
     { label: "LinkedIn", url: "https://www.linkedin.com/in/tarec-krueger-213b6644b/" },
     { label: "Instagram", url: "" },
     { label: "X", url: "" },
-    { label: "GitHub", url: "https://github.com/tareckrueger" }
+    { label: "GitHub", url: "https://github.com/tareckrueger" },
+    { label: "Email", url: "mailto:tareckrueger@gmail.com" }
   ]
 };
 
