@@ -57,6 +57,35 @@ window.PROJECTS = [
     ]
   }
 
+  ,{
+    name: "PandaScout",
+    kind: "German website for a China sourcing service",
+    result: "I designed and built the website for PandaScout, a service that finds checked manufacturers in China for European businesses.",
+    summary: "It explains how sourcing works and which product areas they cover, and lets businesses request a free sourcing check.",
+    did: ["Design", "Development", "Launch"],
+    url: "https://www.pandascout.de/",
+    urlLabel: "pandascout.de",
+    image: "assets/pandascout/hero-1424.webp",
+    imageSmall: "assets/pandascout/hero-800.webp",
+    imageAlt: "Home page of pandascout.de with the headline Produkte aus China. Mit EU-Nachweisen.",
+    width: 1424,
+    height: 890
+  }
+  ,{
+    name: "ShipSmartify",
+    kind: "German website for an e-commerce fulfillment company",
+    result: "I designed and built the website for ShipSmartify, a fulfillment company that ships orders for online shops from China and Germany.",
+    summary: "It presents their shipping options and their own ERP software, and lets brands request a cost check.",
+    did: ["Design", "Development", "Launch"],
+    url: "https://www.shipsmartify.com/",
+    urlLabel: "shipsmartify.com",
+    image: "assets/shipsmartify/hero-1424.webp",
+    imageSmall: "assets/shipsmartify/hero-800.webp",
+    imageAlt: "Home page of shipsmartify.com with the headline Fulfillment aus China und Deutschland. Ohne Blackbox.",
+    width: 1424,
+    height: 890
+  }
+
   /*
   ,{
     name: "Next client",
