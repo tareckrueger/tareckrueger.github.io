@@ -13,7 +13,7 @@ window.SITE = {
   name: "Tarec Krueger",
   bookingUrl: "https://calendly.com/tareckrueger/15min",
   bookingLabel: "Book a free 15 min call",
-  // Profile picture, also used for the swimming fish in the hero.
+  // Profile picture shown on the hero card.
   avatar: "assets/fish.webp",
   // Contact form endpoint from Formspree (formspree.io > your form > Integration).
   // Messages go to the email address set in your Formspree account.
@@ -23,9 +23,10 @@ window.SITE = {
   // Paste your profile links. Entries with an empty url are hidden.
   socials: [
     { label: "LinkedIn", url: "https://www.linkedin.com/in/tarec-krueger-213b6644b/" },
-    { label: "Instagram", url: "" },
-    { label: "X", url: "" },
     { label: "GitHub", url: "https://github.com/tareckrueger" },
+    { label: "X", url: "https://x.com/tareckrueger" },
+    // No profile link without a numeric Discord ID, so this copies the username.
+    { label: "Discord", copy: "tarecmarec_65295" },
     { label: "Email", url: "mailto:tareckrueger@gmail.com" }
   ]
 };
