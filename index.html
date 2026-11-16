@@ -215,6 +215,49 @@ p{text-wrap:pretty}
 .socials a:active{transform:scale(.94)}@media (hover:hover) and (pointer:fine){
   .socials a:hover{color:var(--accent)}
 }
+/* booking window */
+html.book-open{overflow:hidden}
+dialog.book{
+  /* 620px keeps Calendly in its single-column layout, where its card fills the
+     whole frame with no white margins around it */
+  --book-w:620px;--book-h:900px;
+  position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;
+  margin:0;border:0;background:transparent;overflow:hidden;
+  padding:max(24px,env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(24px,env(safe-area-inset-left,0px));
+}
+dialog.book[open]{display:grid;place-items:center}
+dialog.book::backdrop{background:rgb(9 14 11 / .62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity 220ms ease}
+dialog.book.is-open::backdrop{opacity:1}
+.book-panel{
+  position:relative;width:min(var(--book-w),100%);height:min(var(--book-h),100%);
+  background:#FFFFFF;border-radius:var(--r);overflow:hidden;
+  box-shadow:0 2px 6px rgb(0 0 0 / .12),0 40px 90px -24px rgb(0 0 0 / .55);
+  opacity:0;transform:translateY(10px) scale(.985);
+  transition:opacity 220ms var(--ease-out),transform 280ms var(--ease-out);
+}
+dialog.book.is-open .book-panel{opacity:1;transform:none}
+.book-panel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity 240ms ease}
+dialog.book.is-loaded .book-panel iframe{opacity:1}
+/* Mouse devices draw a classic scrollbar inside Calendly's frame; push it just
+   past the panel's clipped edge. Wheel and trackpad scrolling still work. */
+@media (hover:hover) and (pointer:fine){.book-panel iframe{right:auto;width:calc(100% + 17px)}}
+.book-loading{position:absolute;inset:0;display:grid;place-items:center;color:#4C544E;font-size:.9375rem}
+.book-close{
+  position:fixed;top:max(16px,env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));
+  width:44px;height:44px;border:0;border-radius:999px;cursor:pointer;
+  display:grid;place-items:center;background:var(--surface);color:var(--ink);
+  box-shadow:0 6px 20px -6px rgb(0 0 0 / .45);
+  transition:transform 160ms var(--ease-out),color 160ms ease;
+  opacity:0;
+}
+dialog.book.is-open .book-close{opacity:1}
+.book-close svg{width:20px;height:20px;fill:currentColor}
+.book-close:active{transform:scale(.94)}
+@media (hover:hover) and (pointer:fine){.book-close:hover{color:var(--accent)}}
+@media (max-width:700px){
+  dialog.book{padding:max(72px,calc(env(safe-area-inset-top,0px) + 64px)) 0 0}
+  .book-panel{width:100%;height:100%;border-radius:var(--r) var(--r) 0 0}
+}
 footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);color:var(--ink-soft);font-size:.9375rem}
 
 @media (prefers-reduced-motion:reduce){
@@ -314,32 +357,57 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
     if (site.bookingLabel) a.textContent = site.bookingLabel;
     a.target = '_blank'; a.rel = 'noopener';
   });
-  // Calendly popup. The widget loads after the page is idle (or on first hover),
-  // so it never slows the first load. Until it is ready, the button is a normal
-  // link that opens Calendly in a new tab.
-  var calStarted = false, calReady = false;
-  function loadCalendly(){
-    if (calStarted || !/calendly\.com/.test(site.bookingUrl || '')) return;
-    calStarted = true;
-    var css = document.createElement('link');
-    css.rel = 'stylesheet'; css.href = 'https://assets.calendly.com/assets/external/widget.css';
-    document.head.appendChild(css);
-    var sc = document.createElement('script');
-    sc.src = 'https://assets.calendly.com/assets/external/widget.js'; sc.async = true;
-    sc.onload = function(){ calReady = !!(window.Calendly && window.Calendly.initPopupWidget); };
-    document.head.appendChild(sc);
+  // Booking window: our own dialog with Calendly's page inside, sized so the
+  // calendar fills it. The calendar starts loading when someone hovers or
+  // focuses a booking button, so the first page load stays light.
+  // Without <dialog> support the button stays a normal link to Calendly.
+  var CLOSE = '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>';
+  var dlg, frame, closeTimer;
+  function bookingSrc(){
+    var u = site.bookingUrl, sep = u.indexOf('?') < 0 ? '?' : '&';
+    return u + sep + 'embed_domain=' + encodeURIComponent(location.hostname || 'localhost') + '&embed_type=Inline&hide_gdpr_banner=1';
   }
-  document.querySelectorAll('[data-book]').forEach(function(a){
-    ['pointerenter','focus','touchstart'].forEach(function(ev){ a.addEventListener(ev, loadCalendly, {passive:true, once:true}); });
-    a.addEventListener('click', function(e){
-      if (!calReady) { loadCalendly(); return; }
-      e.preventDefault();
-      window.Calendly.initPopupWidget({ url: site.bookingUrl + '?hide_gdpr_banner=1' });
+  function buildDialog(){
+    dlg = document.createElement('dialog');
+    dlg.className = 'book';
+    dlg.setAttribute('aria-label', site.bookingLabel || 'Book a call');
+    dlg.innerHTML = '<div class="book-panel"><p class="book-loading">Loading the calendar...</p></div>' +
+      '<button class="book-close" type="button" aria-label="Close">' + CLOSE + '</button>';
+    document.body.appendChild(dlg);
+    dlg.querySelector('.book-close').addEventListener('click', closeBook);
+    dlg.addEventListener('click', function(e){ if (e.target === dlg) closeBook(); });
+    dlg.addEventListener('cancel', function(e){ e.preventDefault(); closeBook(); });
+  }
+  function ensureFrame(){
+    if (!dlg) buildDialog();
+    if (frame) return;
+    frame = document.createElement('iframe');
+    frame.title = site.bookingLabel || 'Book a call';
+    frame.src = bookingSrc();
+    frame.addEventListener('load', function(){ dlg.classList.add('is-loaded'); });
+    dlg.querySelector('.book-panel').appendChild(frame);
+  }
+  function openBook(){
+    ensureFrame();
+    clearTimeout(closeTimer);
+    document.documentElement.classList.add('book-open');
+    if (!dlg.open) dlg.showModal();
+    void dlg.offsetWidth; // commit the closed state first so the fade-in runs
+    dlg.classList.add('is-open');
+  }
+  function closeBook(){
+    dlg.classList.remove('is-open');
+    closeTimer = setTimeout(function(){
+      dlg.close();
+      document.documentElement.classList.remove('book-open');
+    }, 200);
+  }
+  if (window.HTMLDialogElement && /calendly\.com/.test(site.bookingUrl || '')) {
+    document.querySelectorAll('[data-book]').forEach(function(a){
+      ['pointerenter','focus','touchstart'].forEach(function(ev){ a.addEventListener(ev, ensureFrame, {passive:true, once:true}); });
+      a.addEventListener('click', function(e){ e.preventDefault(); openBook(); });
     });
-  });
-  window.addEventListener('load', function(){
-    if ('requestIdleCallback' in window) requestIdleCallback(loadCalendly, {timeout: 4000}); else setTimeout(loadCalendly, 2500);
-  });
+  }
 
   document.querySelectorAll('[data-site="name"]').forEach(function(n){ if (site.name) n.textContent = site.name; });
   document.getElementById('year').textContent = new Date().getFullYear();
