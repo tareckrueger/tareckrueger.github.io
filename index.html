@@ -23,7 +23,7 @@
   --ink-soft:#4C544E;
   --line:#D9DED6;
   --accent:#17603F;
-  --accent-hover:#124E33;
+  --accent-hover:#1F7F52;
   --on-accent:#FFFFFF;
   --shadow:0 1px 2px rgb(19 40 28 / .06), 0 18px 40px -18px rgb(19 40 28 / .22);
   --field-line:#7C867E;
@@ -42,7 +42,7 @@
     --ink-soft:#A3ACA4;
     --line:#2B322C;
     --accent:#7FD6A6;
-    --accent-hover:#9BE2BA;
+    --accent-hover:#ACEFC8;
     --on-accent:#0C1F15;
     --shadow:0 1px 2px rgb(0 0 0 / .4), 0 18px 40px -18px rgb(0 0 0 / .7);
     --field-line:#6C776E;
@@ -94,12 +94,59 @@ p{text-wrap:pretty}
 /* hero */
 .hero{padding-block:clamp(40px,7vw,88px) clamp(36px,5vw,64px)}
 .hero h1{font-size:clamp(2.5rem,6.4vw,5rem);max-width:15ch}
-.hero p{margin-top:1.25rem;max-width:46ch;font-size:clamp(1.0625rem,1.5vw,1.25rem);color:var(--ink-soft)}
-.hero .btn{margin-top:2rem}
+.hero-copy p{margin-top:1.25rem;max-width:46ch;font-size:clamp(1.0625rem,1.5vw,1.25rem);color:var(--ink-soft)}
+.hero{display:grid;gap:clamp(36px,5vw,48px);align-items:center}
+@media (min-width:1000px){.hero{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:64px}}
+.hero-copy{min-width:0}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:2rem}
+
+/* primary button whose label swaps on hover */
+.swap{display:grid;overflow:hidden}
+.swap > span{grid-area:1/1;text-align:center;transition:transform 300ms var(--ease-out),opacity 200ms ease}
+.swap > span + span{transform:translateY(105%);opacity:0}
+@media (hover:hover) and (pointer:fine){
+  .btn--swap:hover .swap > span:first-child{transform:translateY(-105%);opacity:0}
+  .btn--swap:hover .swap > span + span{transform:none;opacity:1}
+}
+.btn--swap:focus-visible .swap > span:first-child{transform:translateY(-105%);opacity:0}
+.btn--swap:focus-visible .swap > span + span{transform:none;opacity:1}
+
+/* profile card */
+.hero-card{
+  position:relative;isolation:isolate;overflow:hidden;
+  display:grid;gap:20px;padding:clamp(22px,3vw,32px);
+  background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);
+}
+.hc-top{display:flex;align-items:center;gap:16px}
+.avatar{
+  flex:none;width:72px;height:72px;border-radius:999px;overflow:hidden;
+  display:grid;place-items:center;
+  background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--accent);
+  font-weight:800;font-size:1.375rem;letter-spacing:-.02em;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.hc-name{font-weight:700;font-size:1.375rem;letter-spacing:-.02em;line-height:1.2}
+.hc-role{color:var(--ink-soft);font-size:.9375rem}
+.hc-now{color:var(--ink-soft);font-size:.9375rem;padding-top:20px;border-top:1px solid var(--line)}
+.hc-now b{color:var(--ink);font-weight:600}
+.socials--card{margin-left:-10px}
+.hero-fish{position:absolute;z-index:-1;inset:auto -40px -50px auto;width:220px;opacity:0;pointer-events:none}
+.hero-fish img{width:100%;height:auto;border-radius:999px}
+.hero-fish.is-ready{opacity:.14}
 @media (prefers-reduced-motion:no-preference){
-  .hero h1,.hero p,.hero .btn{animation:rise 700ms var(--ease-out) both}
-  .hero p{animation-delay:70ms}
-  .hero .btn{animation-delay:140ms}
+  .hero-fish.is-ready{animation:swim 14s ease-in-out infinite alternate}
+  @keyframes swim{
+    0%{transform:translate(0,0) rotate(-6deg)}
+    50%{transform:translate(-36px,-18px) rotate(4deg)}
+    100%{transform:translate(-70px,6px) rotate(-3deg)}
+  }
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .hero h1,.hero-copy p,.hero-actions,.hero-card{animation:rise 700ms var(--ease-out) both}
+  .hero-copy p{animation-delay:70ms}
+  .hero-actions{animation-delay:140ms}
+  .hero-card{animation-delay:210ms}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}}
 }
 
@@ -277,9 +324,26 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
 
 <main>
   <section class="hero wrap">
-    <h1>I design and build websites for small businesses.</h1>
-    <p>Clear pages that load fast on a phone and tell visitors what to do next. My work is right below.</p>
-    <a class="btn btn--lg" data-book href="#">Book a free 15 min call</a>
+    <div class="hero-copy">
+      <h1>I design and build websites for small businesses.</h1>
+      <p>Clear pages that load fast on a phone and tell visitors what to do next. My work is right below.</p>
+      <div class="hero-actions">
+        <a class="btn btn--lg btn--swap" data-book href="#"><span class="swap"><span>Book a free 15 min call</span><span aria-hidden="true">Excited to work with you</span></span></a>
+        <a class="btn btn--lg btn--ghost" href="#contact">Contact</a>
+      </div>
+    </div>
+    <aside class="hero-card" aria-label="About me">
+      <div class="hero-fish" aria-hidden="true"></div>
+      <div class="hc-top">
+        <div class="avatar" data-avatar><span>TK</span></div>
+        <div>
+          <p class="hc-name" data-site="name">Tarec Krueger</p>
+          <p class="hc-role">Web designer and developer</p>
+        </div>
+      </div>
+      <p class="hc-now"><b>Now learning:</b> databases and full stack development.</p>
+      <nav class="socials socials--card" data-socials aria-label="Social profiles"></nav>
+    </aside>
   </section>
 
   <section class="work wrap" id="work" aria-label="Work">
@@ -340,7 +404,7 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
 <footer>
   <div class="wrap foot">
     <span>&copy; <span id="year">2026</span> <span data-site="name">Tarec Krueger</span></span>
-    <nav class="socials" id="socials" aria-label="Social profiles"></nav>
+    <nav class="socials" data-socials aria-label="Social profiles"></nav>
   </div>
 </footer>
 
@@ -354,7 +418,10 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
 
   document.querySelectorAll('[data-book]').forEach(function(a){
     a.href = site.bookingUrl || '#';
-    if (site.bookingLabel) a.textContent = site.bookingLabel;
+    if (site.bookingLabel) {
+      var first = a.querySelector('.swap > span');
+      if (first) first.textContent = site.bookingLabel; else a.textContent = site.bookingLabel;
+    }
     a.target = '_blank'; a.rel = 'noopener';
   });
   // Booking window: our own dialog with Calendly's page inside, sized so the
@@ -469,7 +536,7 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
   });
 
   // socials: only entries with a url are shown
-  var soc = document.getElementById('socials');
+  var socNodes = document.querySelectorAll('[data-socials]');
   var list = (site.socials || []).filter(function(s){ return s.url; });
   if (list.length){
     // Brand logos from Simple Icons (CC0)
@@ -478,11 +545,23 @@ footer{padding-block:28px calc(28px + env(safe-area-inset-bottom,0px));border-to
       github: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',
       x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>'
     };
-    soc.innerHTML = list.map(function(s){
+    var socHtml = list.map(function(s){
       var icon = ICONS[String(s.label).toLowerCase()];
       return '<a href="' + esc(s.url) + '" target="_blank" rel="noopener" data-brand="' + esc(String(s.label).toLowerCase()) + '" aria-label="' + esc(s.label) + '" title="' + esc(s.label) + '">' + (icon || esc(s.label)) + '</a>';
     }).join('');
-  } else { soc.hidden = true; }
+    socNodes.forEach(function(n){ n.innerHTML = socHtml; });
+  } else { socNodes.forEach(function(n){ n.hidden = true; }); }
+
+  // Avatar and swimming fish appear once the image exists (assets/fish.webp).
+  if (site.avatar){
+    var probe = new Image();
+    probe.onload = function(){
+      document.querySelectorAll('[data-avatar]').forEach(function(a){ a.innerHTML = '<img src="' + esc(site.avatar) + '" alt="" width="72" height="72">'; });
+      var fish = document.querySelector('.hero-fish');
+      if (fish) { fish.innerHTML = '<img src="' + esc(site.avatar) + '" alt="" decoding="async">'; fish.classList.add('is-ready'); }
+    };
+    probe.src = site.avatar;
+  }
 
   // contact form
   var form = document.getElementById('contact-form'), statusEl = document.getElementById('f-status'), sendBtn = document.getElementById('f-send');

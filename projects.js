@@ -13,6 +13,8 @@ window.SITE = {
   name: "Tarec Krueger",
   bookingUrl: "https://calendly.com/tareckrueger/15min",
   bookingLabel: "Book a free 15 min call",
+  // Profile picture, also used for the swimming fish in the hero.
+  avatar: "assets/fish.webp",
   // Contact form endpoint from Formspree (formspree.io > your form > Integration).
   // Messages go to the email address set in your Formspree account.
   formEndpoint: "https://formspree.io/f/mvkakdbp",
